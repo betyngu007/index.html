@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sinais Aviator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    h1 {
+      color: #333;
+    }
+    .signals {
+      margin-top: 20px;
+    }
+    .signal-item {
+      padding: 10px;
+      background-color: #fff;
+      margin: 5px auto;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      max-width: 300px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Sinais do Aviator</h1>
+  <p id="average">Carregando média...</p>
+  <div class="signals" id="signals">
+    <p>Carregando sinais...</p>
+  </div>
+  <button onclick="fetchSignals()">Atualizar Sinais</button>
+
+  <script>
+    const apiUrl = "https://meu-servidor.com/sinais"; // Substitua pela URL do backend Flask
+
+    async function fetchSignals() {
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+          throw new Error("Erro ao buscar os sinais.");
+        }
+        const data = await response.json();
+        const signalsContainer = document.getElementById("signals");
+        const averageElement = document.getElementById("average");
+
+        // Atualiza a média
+        averageElement.textContent = `Média dos Sinais: ${data.media.toFixed(2)}x`;
+
+        // Atualiza a lista de sinais
+        signalsContainer.innerHTML = "";
+        data.velas_altas.forEach(signal => {
+          const signalItem = document.createElement("div");
+          signalItem.className = "signal-item";
+          signalItem.textContent = `Vela Alta: ${signal}x`;
+          signalsContainer.appendChild(signalItem);
+        });
+      } catch (error) {
+        console.error(error);
+        alert("Erro ao carregar sinais. Tente novamente.");
+      }
+    }
+
+    // Carregar os sinais ao iniciar
+    fetchSignals();
+  </script>
+</body>
+</html>
